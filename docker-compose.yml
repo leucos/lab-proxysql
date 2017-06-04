@@ -1,0 +1,57 @@
+node0:
+  image: ronin/pxc:centos7
+  hostname: node0
+  command: sh -c "/usr/sbin/mysqld --basedir=/usr --user=mysql --wsrep-new-cluster --wsrep-node-name=node0 --skip-grant-tables  --innodb-flush-method=O_DSYNC"
+  ports:
+      - "13306:3306"
+      - "4567"
+      - "4568"
+
+node1:
+  image: ronin/pxc:centos7
+  hostname: node1
+  command: sh -c "/usr/sbin/mysqld --basedir=/usr --user=mysql --wsrep-node-name=node1 --innodb-flush-method=O_DSYNC --wsrep_cluster_address=gcomm://node0 --skip-grant-tables --wsrep-sst-method=rsync  "
+  links:
+      - node0
+  ports:
+      - "23306:3306"
+      - "4567"
+      - "4568"
+
+node2:
+  image: ronin/pxc:centos7
+  hostname: node2
+  command: sh -c "/usr/sbin/mysqld --basedir=/usr --user=mysql --wsrep-node-name=node2 --innodb-flush-method=O_DSYNC --wsrep_cluster_address=gcomm://node0 --skip-grant-tables --wsrep-sst-method=rsync  "
+  links:
+      - node0
+  ports:
+      - "33306:3306"
+      - "4567"
+      - "4568"
+
+proxysql:
+  image: percona/proxysql
+  #image: smartboxgroup/proxysql-docker
+  # build: proxysql-docker/
+  hostname: proxysql
+  links:
+    - node0
+    - node1
+    - node2
+  environment:
+    - CLUSTER_NAME=test
+    - MYSQL_ROOT_PASSWORD=toortoor
+    - MYSQL_PROXY_USER=user
+    - MYSQL_PROXY_PASSWORD=pass
+    - DISCOVERY_SERVICE=false
+  expose:
+    - "6032"
+  ports:
+    # ProxySQL admin port for MySQL commands
+    - "6032:6032"
+    # ProxySQL main port
+    - "6033:3306"
+    # gdbserver
+    - "2345:2345"
+  volumes:
+    - "./proxysql_galera_checker.sh:/usr/local/bin/proxysql_galera_checker.sh"
