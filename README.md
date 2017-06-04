@@ -3,13 +3,17 @@ ProxySQL / PXC lab
 
 # Setup
 
-$ docker-compose up
-$ ./setup.bash
-$ mysql -h 127.0.0.1 -P6033 -u user -ppass
+```
+docker-compose up
+./setup.bash
+mysql -h 127.0.0.1 -P6033 -u user -ppass
+```
 
 To connect to proxysqladmin:
 
-$ mysql -h 127.0.0.1 -P6032 -uadmin -padmin
+```
+mysql -h 127.0.0.1 -P6032 -uadmin -padmin
+```
 
 You can also `source ./setup.bash` to access the following convenience functions:
 
@@ -37,7 +41,7 @@ while true; do lab_proxysql "INSERT INTO bar VALUES ('', '$RANDOM');" foo; done
 
 Now, check the general log to see where writes happen:
 
-``
+```
 for i in 0 1 2; do echo -e  "\nNODE $i\n"; docker exec -ti proxysql_node${i}_1 tail -5 /var/lib/mysql/node${i}.log; done
 
 NODE 0
