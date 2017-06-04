@@ -31,8 +31,6 @@ node2:
 
 proxysql:
   image: percona/proxysql
-  #image: smartboxgroup/proxysql-docker
-  # build: proxysql-docker/
   hostname: proxysql
   links:
     - node0
@@ -40,7 +38,7 @@ proxysql:
     - node2
   environment:
     - CLUSTER_NAME=test
-    - MYSQL_ROOT_PASSWORD=toortoor
+    - MYSQL_ROOT_PASSWORD=toor
     - MYSQL_PROXY_USER=user
     - MYSQL_PROXY_PASSWORD=pass
     - DISCOVERY_SERVICE=false
