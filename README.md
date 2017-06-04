@@ -9,7 +9,7 @@ docker-compose up
 mysql -h 127.0.0.1 -P6033 -u user -ppass
 ```
 
-To connect to proxysqladmin:
+To connect to proxysql admin:
 
 ```
 mysql -h 127.0.0.1 -P6032 -uadmin -padmin
@@ -31,7 +31,7 @@ source ./setup.bash
 for i in 0 1 2; do lab_pxc "SET GLOBAL general_log='ON';" $i; done
 ```
 
-Then, in another terminal, insert stuff:
+Then, in another terminal, INSERT stuff:
 
 ```
 source ./setup.bash
@@ -74,3 +74,15 @@ Don't forget to kill your insert loop, and deactivate general log:
 ```
 for i in 0 1 2; do lab_pxc "SET GLOBAL general_log='OFF';" $i; done
 ```
+
+# Ports & credentials
+
+| Host      | Port  | User  | Pass  | Purpose                   |
+|-----------|-------|-------|-------|---------------------------|
+| 127.0.0.1 | 13306 | none  | none  | MySQL node0               |
+| 127.0.0.1 | 23306 | none  | none  | MySQL node1               |
+| 127.0.0.1 | 33306 | none  | none  | MySQL node2               |
+| 127.0.0.1 | 6032  | user  | pass  | MySQL exposed by ProxySQL |
+| 127.0.0.1 | 6033  | admin | admin | ProxySQL admin console    |
+
+You can also connect on ports 3306 on container IPs directly to reach dockerized MySQL instances.
